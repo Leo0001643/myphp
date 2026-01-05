@@ -36,10 +36,12 @@ class SmsHelper
             $sendCount = (int)S($limitKey);
             $maxLimit = 5;
             
-            if ($sendCount >= $maxLimit) {
-                \Think\Log::write('[短信限制] 手机号：' . $mobile . ' 今日已发送' . $sendCount . '次', 'WARN');
-                return array('code' => 0, 'msg' => '今日发送次数已达上限（' . $maxLimit . '次），请明天再试');
-            }
+               if ($sendCount >= $maxLimit) {
+                   \Think\Log::write('[短信限制] 手机号：' . $mobile . ' 今日已发送' . $sendCount . '次', 'WARN');
+                   $limitMsg = L('SMS_LIMIT_EXCEEDED');
+                   $limitMsg = str_replace('%limit%', $maxLimit, $limitMsg);
+                   return array('code' => 0, 'msg' => $limitMsg);
+               }
             
             // 2. 准备短信内容
             $template = '您的验证码是：{code}，5分钟内有效，请勿泄露给他人。';
@@ -78,26 +80,35 @@ class SmsHelper
             
             // 9. 解析结果
             if ($result && is_array($result)) {
-                // 检查是否成功（根据onbuka返回格式调整）
-                if (isset($result['code']) && ($result['code'] == 0 || $result['code'] == 200 || $result['code'] == '0')) {
-                    // 发送成功
-                    S($limitKey, $sendCount + 1, 86400);
-                    return array(
-                        'code' => 1, 
-                        'msg' => '验证码发送成功',
-                        'data' => $result
-                    );
+                // 检查是否成功
+                // onbuka返回格式：status="0" 且 reason="success" 表示成功
+                $isSuccess = false;
+                
+                if (isset($result['status']) && isset($result['reason'])) {
+                    // 方式1：status="0" 且 reason="success"
+                    if (($result['status'] === '0' || $result['status'] === 0) && 
+                        ($result['reason'] === 'success' || strtolower($result['reason']) === 'success')) {
+                        $isSuccess = true;
+                    }
                 } else if (isset($result['status']) && $result['status'] == 'success') {
-                    // 另一种成功格式
+                    // 方式2：status直接等于"success"
+                    $isSuccess = true;
+                } else if (isset($result['code']) && ($result['code'] == 0 || $result['code'] == 200)) {
+                    // 方式3：code=0 或 code=200
+                    $isSuccess = true;
+                }
+                
+                if ($isSuccess) {
+                    // 发送成功，更新限制计数
                     S($limitKey, $sendCount + 1, 86400);
                     return array(
                         'code' => 1, 
-                        'msg' => '验证码发送成功',
+                        'msg' => L('SMS_SEND_SUCCESS'),
                         'data' => $result
                     );
                 } else {
                     // 发送失败
-                    $errMsg = isset($result['message']) ? $result['message'] : (isset($result['msg']) ? $result['msg'] : '短信发送失败');
+                    $errMsg = isset($result['reason']) ? $result['reason'] : (isset($result['message']) ? $result['message'] : (isset($result['msg']) ? $result['msg'] : L('SMS_SEND_FAILED')));
                     \Think\Log::write('[短信发送失败] ' . $errMsg . '，返回数据：' . json_encode($result), 'ERROR');
                     return array(
                         'code' => 0, 
@@ -106,13 +117,13 @@ class SmsHelper
                     );
                 }
             } else {
-                \Think\Log::write('[短信发送失败] 返回数据格式错误', 'ERROR');
-                return array('code' => 0, 'msg' => '短信平台返回数据异常');
+                \Think\Log::write('[短信发送失败] 返回数据格式错误或为空：' . json_encode($result), 'ERROR');
+                return array('code' => 0, 'msg' => L('SMS_PLATFORM_ERROR'));
             }
             
         } catch (\Exception $e) {
             \Think\Log::write('[短信发送异常] ' . $e->getMessage(), 'ERROR');
-            return array('code' => 0, 'msg' => '短信发送异常：' . $e->getMessage());
+            return array('code' => 0, 'msg' => L('SMS_SEND_EXCEPTION') . '：' . $e->getMessage());
         }
     }
     
@@ -182,21 +193,21 @@ class SmsHelper
      * @param string $mobile 手机号（格式：+86 13800138000）
      * @return array ['code' => 1通过/0不通过, 'msg' => '提示信息']
      */
-    public static function validateMobile($mobile)
-    {
-        if (empty($mobile)) {
-            return array('code' => 0, 'msg' => '手机号不能为空');
-        }
-        
-        // 去除空格
-        $mobile = trim($mobile);
-        
-        // 检查格式：必须包含国际区号
-        if (!preg_match('/^\+\d{1,4}\s\d{5,15}$/', $mobile)) {
-            return array('code' => 0, 'msg' => '手机号格式错误，格式：+86 13800138000');
-        }
-        
-        return array('code' => 1, 'msg' => '格式正确');
-    }
+       public static function validateMobile($mobile)
+       {
+           if (empty($mobile)) {
+               return array('code' => 0, 'msg' => L('MOBILE_EMPTY'));
+           }
+           
+           // 去除空格
+           $mobile = trim($mobile);
+           
+           // 检查格式：必须包含国际区号
+           if (!preg_match('/^\+\d{1,4}\s\d{5,15}$/', $mobile)) {
+               return array('code' => 0, 'msg' => L('MOBILE_FORMAT_ERROR'));
+           }
+           
+           return array('code' => 1, 'msg' => L('FORMAT_CORRECT'));
+       }
 }
 ?>

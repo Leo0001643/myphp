@@ -48,6 +48,17 @@ return [
     "初始化搜索" => "Initialize search",
     "邮箱账号" => "Email account",
     "请输入邮箱账号" => "Please enter email account",
+    
+    // SMS verification code related
+    "SMS_SEND_SUCCESS" => "Verification code sent successfully",
+    "SMS_SEND_FAILED" => "SMS sending failed",
+    "SMS_PLATFORM_ERROR" => "SMS platform returned abnormal data",
+    "SMS_LIMIT_EXCEEDED" => "Daily sending limit reached (%limit% times), please try again tomorrow",
+    "SMS_SEND_EXCEPTION" => "SMS sending exception",
+    "MOBILE_EMPTY" => "Mobile number cannot be empty",
+    "MOBILE_FORMAT_ERROR" => "Mobile number format error, format: +86 13800138000",
+    "FORMAT_CORRECT" => "Format correct",
+    
     "会员账号" => "Member account",
     "注册IP" => "Register IP",
     "最后登录" => "Last Login",

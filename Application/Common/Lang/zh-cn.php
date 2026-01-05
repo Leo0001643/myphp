@@ -41,6 +41,17 @@ return [
     "邮箱账号" => "邮箱账号",
     "请输入邮箱账号" => "请输入邮箱账号",
     "会员账号" => "会员账号",
+    
+    // 短信验证码相关
+    "SMS_SEND_SUCCESS" => "验证码发送成功",
+    "SMS_SEND_FAILED" => "短信发送失败",
+    "SMS_PLATFORM_ERROR" => "短信平台返回数据异常",
+    "SMS_LIMIT_EXCEEDED" => "今日发送次数已达上限（%limit%次），请明天再试",
+    "SMS_SEND_EXCEPTION" => "短信发送异常",
+    "MOBILE_EMPTY" => "手机号不能为空",
+    "MOBILE_FORMAT_ERROR" => "手机号格式错误，格式：+86 13800138000",
+    "FORMAT_CORRECT" => "格式正确",
+    
     "注册IP" => "注册IP",
     "最后登录" => "最后登录",
     "未登录" => "未登录",
