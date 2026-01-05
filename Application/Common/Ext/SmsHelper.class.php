@@ -128,12 +128,12 @@ class SmsHelper
     {
         $ch = curl_init();
         
-        // 构建Headers（按照官方Demo）
+        // 构建Headers（严格按照官方Demo格式，注意冒号后无空格）
         $headers = array(
-            'Content-Type: application/json;charset=UTF-8',
-            'Sign: ' . $sign,
-            'Timestamp: ' . $timestamp,
-            'Api-Key: ' . $this->apiKey
+            'Content-Type:application/json;charset=UTF-8',
+            'Sign:' . $sign,
+            'Timestamp:' . $timestamp,
+            'Api-Key:' . $this->apiKey
         );
         
         curl_setopt($ch, CURLOPT_URL, $url);
