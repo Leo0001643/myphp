@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>onbuka短信API测试工具</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #667eea; color: white; padding: 10px 30px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #5568d3; }
+        .result { margin-top: 20px; padding: 15px; border-radius: 4px; white-space: pre-wrap; font-family: monospace; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>onbuka.com 短信API测试工具</h1>
+    
+    <div class="info result">
+        <strong>使用说明：</strong><br>
+        1. 从 onbuka.com 后台获取真实的 App ID、API Key、API Secret<br>
+        2. 填入下面的表单<br>
+        3. 点击"测试API"查看结果<br>
+        4. 如果成功，将配置更新到 sms.php 文件
+    </div>
+    
+    <form id="testForm">
+        <div class="form-group">
+            <label>App ID (应用ID):</label>
+            <input type="text" id="appId" value="cs_2fii8n" placeholder="请输入您的App ID">
+        </div>
+        
+        <div class="form-group">
+            <label>API Key (API密钥):</label>
+            <input type="text" id="apiKey" value="JN85gvcv" placeholder="请输入您的API Key">
+        </div>
+        
+        <div class="form-group">
+            <label>API Secret (密钥):</label>
+            <input type="text" id="apiSecret" value="KJ1kPhA7" placeholder="请输入您的API Secret">
+        </div>
+        
+        <div class="form-group">
+            <label>测试手机号:</label>
+            <input type="text" id="mobile" value="8613800138000" placeholder="例: 8613800138000">
+        </div>
+        
+        <div class="form-group">
+            <label>短信内容:</label>
+            <input type="text" id="content" value="Test message from API" placeholder="测试内容">
+        </div>
+        
+        <button type="submit">测试 API</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script src="/Public/Home/static/js/jquery-3.3.1.min.js"></script>
+    <script>
+    $('#testForm').submit(function(e) {
+        e.preventDefault();
+        
+        var appId = $('#appId').val();
+        var apiKey = $('#apiKey').val();
+        var apiSecret = $('#apiSecret').val();
+        var mobile = $('#mobile').val();
+        var content = $('#content').val();
+        
+        if (!appId || !apiKey || !apiSecret || !mobile) {
+            alert('请填写所有必填项');
+            return;
+        }
+        
+        $('#result').html('<div class="info result">正在测试...</div>');
+        
+        // 生成签名
+        var timestamp = Math.floor(Date.now() / 1000);
+        var signStr = apiKey + apiSecret + timestamp;
+        
+        // 显示调试信息
+        var debug = '=== 调试信息 ===\n';
+        debug += 'App ID: ' + appId + '\n';
+        debug += 'API Key: ' + apiKey + '\n';
+        debug += 'API Secret: ' + apiSecret.substring(0, 4) + '****\n';
+        debug += 'Timestamp: ' + timestamp + '\n';
+        debug += '签名字符串: ' + signStr + '\n\n';
+        
+        // 调用后端测试接口
+        $.ajax({
+            url: '/test_sms_direct.php',
+            method: 'POST',
+            data: {
+                appId: appId,
+                apiKey: apiKey,
+                apiSecret: apiSecret,
+                mobile: mobile,
+                content: content,
+                timestamp: timestamp
+            },
+            success: function(response) {
+                try {
+                    var result = typeof response === 'string' ? JSON.parse(response) : response;
+                    
+                    var html = '<div class="result ';
+                    if (result.status == '-1') {
+                        html += 'error">❌ 认证失败\n\n';
+                        html += debug;
+                        html += '错误: ' + result.reason + '\n\n';
+                        html += '⚠️ 请检查:\n';
+                        html += '1. App ID 是否正确（最常见问题）\n';
+                        html += '2. API Key 是否正确\n';
+                        html += '3. API Secret 是否正确\n';
+                        html += '4. 账号是否已激活\n';
+                    } else if (result.status == '0' || result.status == '1') {
+                        html += 'success">✅ 测试成功！\n\n';
+                        html += debug;
+                        html += '完整响应:\n' + JSON.stringify(result, null, 2) + '\n\n';
+                        html += '📝 下一步:\n';
+                        html += '请更新配置文件 Application/Common/Conf/sms.php:\n';
+                        html += "'SMS_API_KEY' => '" + apiKey + "',\n";
+                        html += "'SMS_API_SECRET' => '" + apiSecret + "',\n";
+                        html += "'SMS_APP_ID' => '" + appId + "',\n";
+                    } else {
+                        html += 'info">响应:\n' + JSON.stringify(result, null, 2);
+                    }
+                    html += '</div>';
+                    
+                    $('#result').html(html);
+                } catch(e) {
+                    $('#result').html('<div class="error result">解析错误: ' + e.message + '\n\n原始响应:\n' + response + '</div>');
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#result').html('<div class="error result">请求失败: ' + error + '</div>');
+            }
+        });
+    });
+    </script>
+</body>
+</html>
+
