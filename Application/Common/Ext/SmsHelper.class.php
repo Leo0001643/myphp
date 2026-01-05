@@ -90,7 +90,7 @@ class SmsHelper
                     ];
                 } else {
                     // 发送失败
-                    $errMsg = $result['message'] ?? $result['msg'] ?? '短信发送失败';
+                    $errMsg = isset($result['message']) ? $result['message'] : (isset($result['msg']) ? $result['msg'] : '短信发送失败');
                     \Think\Log::write('[短信发送失败] ' . $errMsg . '，返回数据：' . json_encode($result), 'ERROR');
                     
                     return [

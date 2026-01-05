@@ -130,15 +130,15 @@ class ChatController extends HomeController
                 }
 
                 // 3. 保存到本地数据库
-                $sessionId = M('chat_session')->add([
+                $sessionId = M('chat_session')->add(array(
                     'user_id' => $userId,
                     'ticket_id' => $ticket['id'],
-                    'ticket_code' => $ticket['code'] ?? '',
+                    'ticket_code' => isset($ticket['code']) ? $ticket['code'] : '',
                     'contact_id' => $contactId,
                     'status' => 'active',
                     'create_time' => time(),
                     'update_time' => time(),
-                ]);
+                ));
 
                 if (!$sessionId) {
                     \Think\Log::write('[Chat] 保存会话失败', 'ERROR');
@@ -158,7 +158,7 @@ class ChatController extends HomeController
                     'info' => '聊天已开始',
                     'session_id' => $sessionId,
                     'ticket_id' => $ticket['id'],
-                    'ticket_code' => $ticket['code'] ?? '',
+                    'ticket_code' => isset($ticket['code']) ? $ticket['code'] : '',
                 ]);
 
             } catch (\Exception $e) {
@@ -359,7 +359,7 @@ class ChatController extends HomeController
                             'message' => $msg['message'],
                             'sender_type' => isset($msg['userid']) ? 'agent' : 'user',
                             'create_time' => strtotime($msg['datecreated']),
-                            'format' => $msg['format'] ?? 'T',
+                            'format' => isset($msg['format']) ? $msg['format'] : 'T',
                         ];
                     }
                 }
