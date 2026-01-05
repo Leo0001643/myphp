@@ -1,0 +1,191 @@
+.no_header{
+    width:100%;
+    height:50px;
+    background: #121420;
+}
+.ctbox{width:100vw;height:100vh;padding:0px 0px;}
+.no_content{
+    width:100%;
+    height:100vh;
+    padding: 0px 20px;
+    background: #121420;
+}
+
+.no_title{
+    width:100%;
+    height: 60px;
+    line-height: 60px;
+    background: #121420;
+}
+.title_txt{font-size:16px;}
+.no_inbox{
+
+    width:100%;
+    /*height:300px;*/
+    margin-top:0px;
+    background: #121420;
+    margin-top: -20px;
+    min-height: 650px;
+
+}
+.inputbox{width:100%;height:100px;}
+.input_title{width:100%;height:26px;}
+.input_div{width:100%;height: 50px;line-height: 50px;border-radius: 5px;padding: 0px 10px;background: #1b1d2a;}
+.cinput{width:100%;padding:5px;height:45px;background: #1b1d2a;border:none;height: 30px;font-size:16px;outline: none !important;color: #e6e6e6}
+
+.no_button_box{width:90%;height:25px;position: fixed;bottom: 50px;left: 5%;}
+.small_hs_btn{width:50px;height: 50px;line-height: 50px;background: #0052fe;float:right;border-radius:5px;text-align: center}
+.bi_right{font-size: 26px;font-weight: bold;color:#333;}
+.regxybox{width:70%;height: 50px;float:left;line-height: 50px;}
+
+
+
+.rzred {
+    color: #f5465c;
+}
+.rzgreen {
+    color: #2ebc84;
+}
+
+.van-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,.7);
+}
+.buy_container .van-popup {
+    width: 80%;
+}
+.van-popup--center.van-popup--round {
+    border-radius: 0.42667rem;
+}
+.van-popup {
+    background-color: #2d2d35!important;
+}
+.van-popup--center {
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate3d(-50%,-50%,0);
+    transform: translate3d(-50%,-50%,0);
+}
+.van-popup {
+    position: fixed;
+    max-height: 100%;
+    overflow-y: auto;
+    background-color: #fff;
+    -webkit-transition: -webkit-transform .3s;
+    transition: -webkit-transform .3s;
+    transition: transform .3s;
+    transition: transform .3s,-webkit-transform .3s;
+    -webkit-overflow-scrolling: touch;
+}
+.buy_container .tradeorder {
+    background: #2d2d35!important;
+}
+.buy_container .tradeorder-title {
+    color: #efd69d!important;
+    padding: 0.4rem 0;
+    text-align: center;
+}
+.buy_container .tradeorder-title span {
+    font-size: .42667rem;
+}
+.buy_container .tradeorder-top {
+    padding: 0.26667rem 0.26667rem 0 0.26667rem;
+    margin: 0.53333rem auto;
+    border-radius: 0.13333rem;
+}
+.buy_container .tradeorder-bili {
+    width: 90%;
+    margin: 0 auto;
+}
+.buy_container .tradeorder-top-list:first-child, .buy_container .tradeorder-top-list:first-child span:nth-child(2) {
+    color: #efd69d!important;
+}
+.buy_container .tradeorder-top-list {
+    color: #efd69d!important;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding-bottom: 0.26667rem;
+}
+.buy_container .footer {
+    width: 80%;
+    margin: auto;
+    padding: 0.53333rem 0;
+}
+.buy_container .van-button {
+    width: 100%;
+}
+.van-button--primary {
+    background: -webkit-linear-gradient(bottom,#e6d2b5,#b18c64)!important;
+    background: linear-gradient(0deg,#e6d2b5,#b18c64)!important;
+    color: #000;
+    border: none;
+}
+.van-button--round {
+    border-radius: 26.64rem;
+}
+    padding: 0 0.4rem;
+    font-size: .37333rem;
+}
+.van-button--primary {
+    color: #fff;
+    background-color: #07c160;
+    border: 0.02667rem solid #07c160;
+}
+.van-button {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    height: 1.17333rem;
+    margin: 0;
+    padding: 0;
+    font-size: .42667rem;
+    line-height: 1.2;
+    text-align: center;
+    border-radius: 0.05333rem;
+    cursor: pointer;
+    -webkit-transition: opacity .2s;
+    transition: opacity .2s;
+    -webkit-appearance: none;
+}
+.van-button__content {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    height: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+

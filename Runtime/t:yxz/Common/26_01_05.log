@@ -1,0 +1,12 @@
+[ 2026-01-05T00:08:19+08:00 ] 39.173.76.6 /index.php?m=api&c=app&a=getPlatformConfig
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000019s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004163s ]
+NOTIC: [8192] preg_replace(): The /e modifier is deprecated, use preg_replace_callback instead /www/wwwroot/168stoneex.com/ThinkPHP/Common/functions.php 第 157 行.
+
+[ 2026-01-05T00:11:54+08:00 ] 39.173.76.6 /index.php?m=api&c=app&a=getPlatformConfig
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000019s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003839s ]
+NOTIC: [8192] preg_replace(): The /e modifier is deprecated, use preg_replace_callback instead /www/wwwroot/168stoneex.com/ThinkPHP/Common/functions.php 第 157 行.
+

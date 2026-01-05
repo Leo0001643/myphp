@@ -1,0 +1,341 @@
+<include file="Public:header"/>
+<div id="main-content">
+	<div id="top-alert" class="fixed alert alert-error" style="display: none;">
+		<button class="close fixed" style="margin-top: 4px;">&times;</button>
+		<div class="alert-content">警告内容</div>
+	</div>
+	<div id="main" class="main">
+		<div class="main-title-h">
+			<span class="h1-title">用户管理</span>
+		</div>
+		<div class="cf">
+			<div class="fl">
+				<a class="btn btn-success  " href="{:U('User/edit')}">新 增</a>
+				<button class="ajax-post btn  btn-info " url="{:U('User/status',array('type'=>'1'))}" target-form="ids">
+				冻结</button>
+				<button class="ajax-post btn  btn-danger" url="{:U('User/status',array('type'=>'2'))}" target-form="ids">
+				解冻</button>
+				<button class="ajax-post btn  btn-info " url="{:U('User/status',array('type'=>'3'))}" target-form="ids">
+				允许提币</button>
+				<button class="ajax-post btn  btn-danger" url="{:U('User/status',array('type'=>'4'))}" target-form="ids">
+				禁止提币</button>
+				<button class="btn ajax-post confirm btn-danger " url="{:U('User/status',array('type'=>'5'))}" target-form="ids">
+				删除</button>
+				<a class="btn btn-success" href="{:U('User/sendnotice')}?id=0&type=2">群发通知</a>
+			</div>
+			<div class="search-form fr cf">
+				<div class="sleft">
+					<form name="formSearch" id="formSearch" method="get" name="form1">
+						<select style="width:120px;float:left;margin-right:10px;" name="status" class="form-control">
+							<option value="" <empty name="Think.get.status">selected</empty> >全部状态</option>
+							<option value="1" <eq name="Think.get.status" value="1">selected</eq> >正常状态</option>
+							<option value="2" <eq name="Think.get.status" value="2">selected</eq> >冻结状态</option>
+						</select>
+						<select style="width:120px;float:left;margin-right:10px;" name="field" class="form-control">
+							<option value="username"
+							<empty name="Think.get.field">selected</empty>
+							>邮箱账号</option>
+						</select>
+
+						<script type="text/javascript" src="/Public/layer/laydate/laydate.js"></script>
+
+						<input type="text" name="name" class="search-input form-control" value="{$Think.get.name}" placeholder="请输入邮箱账号" style="">
+						<a class="sch-btn" href="javascript:;" id="search"> <i class="btn-search"></i> </a>
+					</form>
+					<script>
+						//搜索功能
+						$(function () {
+							$('#search').click(function () {
+								$('#formSearch').submit();
+							});
+						});
+						//回车搜索
+						$(".search-input").keyup(function (e) {
+							if (e.keyCode === 13) {
+								$("#search").click();
+								return false;
+							}
+						});
+					</script>
+				</div>
+			</div>
+		</div>
+		<div class="data-table table-striped">
+			<form id="form"  method="post" class="form-horizontal">
+				<table class="">
+					<thead>
+					<tr>
+						<th class="row-selected row-selected">
+							<input class="check-all" type="checkbox"/>
+						</th>
+						<th class="">ID</th>
+						<th class="">会员账号</th>
+						<th class="">登陆</th>
+						<th class="">注册IP/时间</th>
+						<th class="">地址</th>
+						<th class="">推荐人</th>
+						<th class="">认证</th>
+						<th class="">状态</th>
+						<th class="">邀请码</th>
+						<th class="">操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<notempty name="list">
+						<volist name="list" id="vo">
+							<tr>
+								<td>
+									<input class="ids" type="checkbox" name="id[]" value="{$vo.id}"/>
+								</td>
+								<td>{$vo.id}</td>
+								<td title="登录该用户"><a href=" {:U('User/loginadmin?id='.$vo['id'].'&pass='.$vo['password'])}" target="_blank">{$vo.username}</a></td>
+								<td><span>{$vo.logins}</span>次</td>
+								<td>
+								    <span>IP：{$vo.addip}</span><br />
+								    <span>时间：<?php echo date("Y-m-d H:i:s",$vo['addtime']);?></span><br />
+								    <span>{:L('最后登录')}：<?php echo !empty($vo['last_login_time']) ? date("Y-m-d H:i:s",$vo['last_login_time']) : L('未登录');?></span><br />
+								    <span>USDT(USDT)余额：可用 {$vo.usdt_available} | 冻结 {$vo.usdt_frozen} | 总计 {$vo.usdt_total}</span>
+								</td>
+								<td><span>{$vo.addr}</span></td>
+                                <td>
+									<neq name="vo.invit_1"><a href="{:U('User/index?name='.$vo['invit_1'].'&field=username')}">1代：{$vo['invit_1']}</a><br></neq>
+									<neq name="vo.invit_2"><a href="{:U('User/index?name='.$vo['invit_2'].'&field=username')}">2代：{$vo['invit_2']}</a><br></neq>
+									<neq name="vo.invit_3"><a href="{:U('User/index?name='.$vo['invit_3'].'&field=username')}">3代：{$vo['invit_3']}</a><br></neq>
+								</td>
+								
+								<td>
+								    <eq name="vo.rzstatus" value="0">未提交</eq>
+								    <eq name="vo.rzstatus" value="1"><span style="color:blue;">待审核</span></eq>
+								    <eq name="vo.rzstatus" value="2"><span style="color:green;">认证成功</span></eq>
+								    <eq name="vo.rzstatus" value="3"><span style="color:red;">认证驳回</span></eq>
+								</td>
+								
+								<td>
+								    <eq name="vo.status" value="1">登陆：<span style="color:green;">正常</span></eq>
+								    <eq name="vo.status" value="2">登陆：<span style="color:red;">冻结</span></eq>
+								    <br />
+								    <eq name="vo.txstate" value="1">提币：<span style="color:green;">正常</span></eq>
+								    <eq name="vo.txstate" value="2">提币：<span style="color:red;">禁止</span></eq>
+								</td>
+                                <td><span>{$vo.invit}</span></td>
+                                <td>
+						            <a class="btn btn-primary btn-xs" href="{:U('User/edit')}?id={$vo.id}">编辑</a>
+						            <eq name="vo.rzstatus" value="1">
+						            <a class="btn btn-primary btn-xs" href="{:U('User/authrz')}?id={$vo.id}">审核认证</a>
+						            </eq>
+						            <a class="btn btn-primary btn-xs" href="{:U('User/sendnotice')}?id={$vo.id}&type=1">发送通知</a>
+						            <a class="btn btn-warning btn-xs trading-limit" data="{$vo.id}" data-username="{$vo.username}">{:L('交易限制')}</a>
+						            <eq name="vo.is_agent" value="0">
+						            <input type="button" class="ajax-get btn btn-danger btn-xs" value="设为代理" onclick="setagent('{$vo.id}');"/>
+						            </eq>
+						            <a class="btn btn-success btn-xs czhbhbhbhbhb" data="{$vo.id}">充币</a>
+						        </td>
+							</tr>
+						</volist>
+						<else/>
+						<td colspan="12" class="text-center empty-info"><i class="glyphicon glyphicon-exclamation-sign"></i>暂无数据</td>
+					</notempty>
+					</tbody>
+				</table>
+			</form>
+			<div class="page">
+				<div>{$page}</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	//提交表单
+	$('#submit').click(function () {
+		$('#form').submit();
+	});
+	
+	$(".czhbhbhbhbhb").click(function () {
+	    var html = '<form class="form-horizontal" role="form"> <input type="hidden" name="rruid" id="rruid" value="'+$(this).attr('data')+'" /> <div class="form-group"> <label for="leixin">请选择充值的币种</label> <select class="form-control" name="leixin" id="leixin"> <option oid="6" value="btc">BTC</option> <option oid="7" value="eth">ETH</option> <option oid="4" value="usdt">USDT</option> <option oid="12" value="eos">EOS</option> <option oid="13" value="doge">DOGE</option> <option oid="14" value="bch">BCH</option> <option oid="15" value="ltc">LTC</option> <option oid="16" value="trx">TRX</option> <option oid="17" value="xrp">XRP</option> <option oid="18" value="iotx">IOTX</option> <option oid="19" value="fil">FIL</option> <option oid="20" value="shib">SHIB</option> <option oid="21" value="flow">FLOW</option> <option oid="22" value="JST">JST</option> <option oid="23" value="itc">ITC</option> <option oid="24" value="ht">HT</option> <option oid="25" value="ogo">OGO</option> </select> </div> <div class="form-group"> <label for="amount">请输入充币的金额</label> <input type="number" class="form-control" name="amount" id="amount" placeholder="请输入充币的金额"> </div> </form>';
+	    
+	   
+	    layer.open({
+            title: '充币'
+            , btn: ['确定']
+            , content: html
+            ,yes: function (index,layero) {
+                var rruid = $("#rruid").val();
+                var coinn = $("#leixin").val();
+                var amoun = $("#amount").val();
+                // alert($('body')('#leixin').val());
+                
+                $.post("{:U('User/coin')}", {
+                    uid: rruid,
+                    coin: coinn,
+                    amount: amoun,
+                }, function (data) {
+                    if (data.status == 1) {
+                        layer.msg(data.info, {
+                            icon: 1
+                        });
+                        setTimeout("shuaxin()",1000);
+                    } else {
+                        layer.msg(data.info, {
+                            icon: 2
+                        });
+                    }
+                }, "json");
+            }
+	    });
+
+	});
+	$(".page > div").children("a").each(function(){
+		var ahref = $(this).attr('href');
+		var ahrefarr = ahref.split("/");
+		var ahlength = ahrefarr.length;
+		var newhref = '';
+		for(var i=0;i<ahlength;i++){
+			if(i<3 && i>0){
+				newhref += "/"+ahrefarr[i];
+			}
+			if(i==3){
+				newhref += "/"+ahrefarr[i]+".html?";
+			}
+			if(i>=4 && i%2==0){
+				newhref += "&"+ahrefarr[i]+"="+ahrefarr[i+1];
+			}
+		}
+		$(this).attr("href",newhref);
+	});
+	
+	// 交易限制功能（合并交易量显示）
+	$(".trading-limit").click(function () {
+	    var uid = $(this).attr('data');
+	    var username = $(this).attr('data-username');
+	    
+	    // 显示加载中
+	    layer.load(1, {shade: [0.5,'#8F8F8F']});
+	    
+	    // 先获取交易量信息
+	    $.post("{:U('User/getTradingVolume')}", {
+	        uid: uid
+	    }, function (volumeData) {
+	        layer.closeAll('loading');
+	        
+	        var html = '<form class="form-horizontal" role="form">' +
+	            '<input type="hidden" name="uid" id="trading_uid" value="'+uid+'" />' +
+	            '<div class="form-group">' +
+	            '<label>{:L("会员账号")}</label>' +
+	            '<input type="text" class="form-control" value="'+username+'" readonly>' +
+	            '</div>' +
+	            '<div class="form-group">' +
+	            '<label>{:L("充值金额")}</label>' +
+	            '<input type="text" class="form-control" value="'+(volumeData.status == 1 ? volumeData.recharge_amount : '0.00')+'" readonly style="color: #000000; font-weight: bold;">' +
+	            '</div>' +
+	            '<div class="form-group">' +
+	            '<label>{:L("已完成交易量")}</label>' +
+	            '<input type="text" class="form-control" value="'+(volumeData.status == 1 ? volumeData.trading_volume : '0.00')+'" readonly style="color: #000000; font-weight: bold;">' +
+	            '</div>' +
+	            '<div class="form-group">' +
+	            '<label>{:L("剩余需完成交易量")}</label>' +
+	            '<input type="text" class="form-control" value="'+(volumeData.status == 1 ? volumeData.remaining_volume : '0.00')+'" readonly style="color: #000000; font-weight: bold;">' +
+	            '</div>' +
+	            '<hr style="margin: 20px 0;">' +
+	            '<div class="form-group">' +
+	            '<label>{:L("操作类型")}</label>' +
+	            '<select class="form-control" name="action_type" id="action_type">' +
+	            '<option value="clear">{:L("清除限制")}</option>' +
+	            '<option value="add">{:L("增加合约交易额度")}</option>' +
+	            '<option value="reduce">{:L("减少合约交易额度")}</option>' +
+	            '</select>' +
+	            '</div>' +
+	            '<div class="form-group" id="amount_group" style="display:none;">' +
+	            '<label>{:L("额度调整")}</label>' +
+	            '<input type="number" class="form-control" name="amount" id="trading_amount" placeholder="{:L("请输入调整额度")}">' +
+	            '</div>' +
+	            '</form>';
+	        
+	        layer.open({
+                title: '{:L("交易限制管理")}'
+                , btn: ['确定', '取消']
+                , content: html
+                ,yes: function (index,layero) {
+                    var uid = $("#trading_uid").val();
+                    var actionType = $("#action_type").val();
+                    var amount = $("#trading_amount").val();
+                    
+                    if(actionType != 'clear' && (!amount || amount <= 0)) {
+                        layer.msg('请输入正确的调整额度', {icon: 2});
+                        return;
+                    }
+                    
+                    $.post("{:U('User/tradingLimit')}", {
+                        uid: uid,
+                        action_type: actionType,
+                        amount: amount
+                    }, function (data) {
+                        if (data.status == 1) {
+                            layer.msg(data.info, {
+                                icon: 1
+                            });
+                            setTimeout("shuaxin()",1000);
+                        } else {
+                            layer.msg(data.info, {
+                                icon: 2
+                            });
+                        }
+                    }, "json");
+                }
+	        });
+	        
+	        // 根据操作类型显示/隐藏额度输入框
+	        $("#action_type").change(function() {
+	            if($(this).val() == 'clear') {
+	                $("#amount_group").hide();
+	            } else {
+	                $("#amount_group").show();
+	            }
+	        });
+	    }, "json");
+	});
+	
+
+</script>
+<include file="Public:footer" />
+<script type="text/javascript">
+    function setagent(id) {
+        var uid = parseInt(id);
+        if (uid == "" || uid == null || uid <=0) {
+            layer.alert('参数错误！');
+            return false;
+        }
+        layer.load(0, {shade: [0.5,'#8F8F8F']});
+        $.post("{:U('User/setagent')}", {
+            id: uid
+        }, function (data) {
+            setTimeout("closetanchu()",2000);
+            if (data.status == 1) {
+                layer.msg(data.info, {
+                    icon: 1
+                });
+                setTimeout("shuaxin()",1000);
+            } else {
+                layer.msg(data.info, {
+                    icon: 2
+                });
+            }
+        }, "json");
+    }
+</script>
+<script type="text/javascript">
+    function closetanchu(){
+        layer.closeAll('loading');
+    }
+    function shuaxin(){
+        window.location.href=window.location.href;
+    }
+</script>
+<block name="script">
+	<script type="text/javascript" charset="utf-8">
+		//导航高亮
+		highlight_subnav("{:U('User/index')}");
+	</script>
+</block>
+
+

@@ -1,0 +1,28 @@
+<include file="Public:header"/>
+
+<div class="layui-form-item">
+    <label for="" class="layui-form-label">权限</label>
+    <div class="layui-input-block">
+        {foreach $permissions as $k}
+        <dl class="box">
+            <dt>
+                <div><input id="menu{$k['id']}" type="checkbox" name="permissions[]" value="{$k['id']}" title="{$k['title']}" lay-skin="primary" {if isset($k['own']) && $k['own'] } checked {/if} ></div>
+            </dt>
+            {if isset($k['children']) && !empty($k['children']) }
+            {foreach $k['children'] as $v }
+            <dd>
+                <div class="cate-second"><input id="menu{$k['id']}-{$v['id']}" type="checkbox" name="permissions[]" value="{$v['id']}" title="{$v['title']}" lay-skin="primary" {if isset($v['own']) && $v['own'] } checked {/if} ></div>
+                {if isset($v['children']) && !empty($v['children']) }
+                <div class="cate-third">
+                    {foreach $v['children'] as $i }
+                    <input type="checkbox" id="menu{$k['id']}-{$v['id']}-{$i['id']}" name="permissions[]" value="{$i['id']}" title="{$i['title']}" lay-skin="primary" {if isset($i['own']) && $i['own'] } checked {/if} >
+                    {/foreach}
+                </div>
+                {/if}
+            </dd>
+            {/foreach}
+            {/if}
+        </dl>
+        {/foreach}
+    </div>
+</div>
