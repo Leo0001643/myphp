@@ -317,7 +317,12 @@ class LoginController extends HomeController
                     'mobile' => $mobile
                 ]);
             } else {
-                $this->ajaxReturn(['code' => 0, 'info' => $result['msg']]);
+                // 返回详细错误信息（包含API响应用于调试）
+                $this->ajaxReturn(array(
+                    'code' => 0, 
+                    'info' => $result['msg'],
+                    'debug_data' => APP_DEBUG ? $result['data'] : null // 调试模式返回完整响应
+                ));
             }
         } else {
             $this->ajaxReturn(['code' => 0, 'info' => L('非法请求')]);
