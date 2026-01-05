@@ -48,9 +48,12 @@ class SmsHelper
             // 3. 解析手机号（去除空格和加号）
             $cleanMobile = str_replace(array(' ', '+'), '', $mobile);
             
-            // 4. 生成签名（根据官方Demo）
+            // 4. 生成签名（按官方Demo：md5(apiKey + apiSecret + timestamp)）
             $timestamp = time();
             $sign = md5($this->apiKey . $this->apiSecret . $timestamp);
+            
+            // 记录签名信息用于调试
+            \Think\Log::write('[短信签名] apiKey:' . $this->apiKey . ' + apiSecret:' . substr($this->apiSecret, 0, 4) . '*** + timestamp:' . $timestamp . ' = sign:' . $sign, 'DEBUG');
             
             // 5. 构建请求数据（JSON格式）
             $dataArr = array(
@@ -65,7 +68,7 @@ class SmsHelper
             
             // 6. 记录请求日志
             \Think\Log::write('[短信发送] 请求参数：' . $jsonData, 'INFO');
-            \Think\Log::write('[短信签名] Timestamp:' . $timestamp . ', Sign:' . $sign, 'INFO');
+            \Think\Log::write('[短信发送] Headers: Sign=' . $sign . ', Timestamp=' . $timestamp . ', Api-Key=' . $this->apiKey, 'INFO');
             
             // 7. 发送HTTP请求
             $result = $this->httpPostJson($this->apiUrl, $jsonData, $sign, $timestamp);
